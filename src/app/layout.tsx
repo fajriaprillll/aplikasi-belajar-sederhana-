@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Aplikasi kuis belajar interaktif dan seru untuk siswa SD Kelas 1-6.",
 };
 
+import BackgroundShapes from "@/components/ui/BackgroundShapes";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${inter.variable} antialiased`}>
       <body>
+        <BackgroundShapes />
         {children}
       </body>
     </html>
