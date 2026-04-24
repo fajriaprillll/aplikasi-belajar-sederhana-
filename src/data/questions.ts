@@ -15,149 +15,109 @@ export type GradeData = Record<string, SubjectData>;
 
 const rawData: GradeData = {
   grade1: {
-    pai: [
-      { id: "g1p1", type: 'multiple-choice', question: "Rukun Islam pertama adalah...", options: ["Syahadat", "Shalat", "Puasa", "Zakat"], answer: "Syahadat" },
-      { id: "g1p2", type: 'multiple-choice', question: "Agama kita adalah...", options: ["Kristen", "Islam", "Buddha", "Hindu"], answer: "Islam" },
-      { id: "g1e1", type: 'essay', question: "Siapa pencipta alam semesta?", answer: "Allah" }
-    ],
     matematika: [
-      { id: "g1m1", type: 'multiple-choice', question: "2 + 2 = ...", options: ["3", "4", "5", "6"], answer: "4" },
-      { id: "g1m2", type: 'multiple-choice', question: "Angka sebelum lima adalah...", options: ["tiga", "empat", "enam", "dua"], answer: "empat" }
+      { id: "g1m1", type: 'multiple-choice', question: "Setelah angka 15 adalah angka...", options: ["14", "16", "17", "18"], answer: "16" },
+      { id: "g1m2", type: 'multiple-choice', question: "7 + 5 = ...", options: ["11", "12", "13", "14"], answer: "12" },
+      { id: "g1m3", type: 'multiple-choice', question: "Lambang bilangan 'dua puluh' adalah...", options: ["12", "2", "20", "22"], answer: "20" },
+      { id: "g1e1", type: 'essay', question: "Berapa hasil dari 10 dikurangi 3?", answer: "7" }
     ],
-    blp: [
-      { id: "g1b1", type: 'multiple-choice', question: "Masyarakat Lampung menyebut 'Salam' dengan...", options: ["Tabik Pun", "Sampurasun", "Horas", "Kulonuwun"], answer: "Tabik Pun" },
-      { id: "g1b2", type: 'multiple-choice', question: "Mahkota wanita Lampung disebut...", options: ["Kebaya", "Siger", "Blangkon", "Suntiang"], answer: "Siger" },
-      { id: "g1e1", type: 'essay', question: "Lampung ada di pulau apa?", answer: "Sumatera" }
+    indonesia: [
+      { id: "g1i1", type: 'multiple-choice', question: "Huruf vokal pada kata 'BUKU' adalah...", options: ["B dan K", "U dan U", "B dan U", "K dan U"], answer: "U dan U" },
+      { id: "g1i2", type: 'multiple-choice', question: "Ibu memasak di...", options: ["Kamar", "Halaman", "Dapur", "Ruang tamu"], answer: "Dapur" },
+      { id: "g1e1", type: 'essay', question: "Lanjutkan kalimat ini: Mata digunakan untuk...", answer: "Melihat" }
     ],
-    english: [
-      { id: "g1e1", type: 'multiple-choice', question: "Color of Banana is...", options: ["Red", "Yellow", "Blue", "Black"], answer: "Yellow" },
-      { id: "g1e2", type: 'essay', question: "English of 'Satu' is...", answer: "One" }
+    ppkn: [
+      { id: "g1p1", type: 'multiple-choice', question: "Lambang negara Indonesia adalah...", options: ["Pohon Beringin", "Garuda Pancasila", "Bendera", "Rantai"], answer: "Garuda Pancasila" },
+      { id: "g1p2", type: 'multiple-choice', question: "Warna bendera Indonesia adalah...", options: ["Merah Biru", "Putih Merah", "Merah Putih", "Hijau Kuning"], answer: "Merah Putih" }
     ]
   },
   grade2: {
-    pai: [
-      { id: "g2p1", type: 'multiple-choice', question: "Nabi terakhir adalah...", options: ["Adam", "Muhammad", "Isa", "Musa"], answer: "Muhammad" },
-      { id: "g2e1", type: 'essay', question: "Al-Amin artinya...", answer: "Dapat Dipercaya" }
-    ],
     matematika: [
-      { id: "g2m1", type: 'multiple-choice', question: "5 x 2 = ...", options: ["7", "10", "3", "12"], answer: "10" },
-      { id: "g2e1", type: 'essay', question: "Berapa 10 + 10 + 5?", answer: "25" }
+      { id: "g2m1", type: 'multiple-choice', question: "Bentuk perkalian dari 3 + 3 + 3 + 3 adalah...", options: ["3 x 3", "4 x 3", "3 x 4", "4 x 4"], answer: "4 x 3" },
+      { id: "g2m2", type: 'multiple-choice', question: "250 ... 205 (Tanda yang tepat adalah)", options: [">", "<", "=", "≠"], answer: ">" },
+      { id: "g2e1", type: 'essay', question: "Berapa hasil dari 5 dikali 4?", answer: "20" }
     ],
-    blp: [
-      { id: "g2b1", type: 'multiple-choice', question: "Hewan gajah banyak ditemukan di daerah...", options: ["Kalianda", "Metro", "Way Kambas", "Liwa"], answer: "Way Kambas" },
-      { id: "g2b2", type: 'essay', question: "Apa sebutan rumah ibadah umat Islam?", answer: "Masjid" }
+    indonesia: [
+      { id: "g2i1", type: 'multiple-choice', question: "Persamaan kata 'Giat' adalah...", options: ["Malas", "Rajin", "Pintar", "Bosan"], answer: "Rajin" },
+      { id: "g2i2", type: 'multiple-choice', question: "Tanda untuk mengakhiri kalimat berita adalah...", options: ["Tanda tanya", "Tanda seru", "Titik", "Koma"], answer: "Titik" }
     ],
-    english: [
-      { id: "g2e1", type: 'multiple-choice', question: "English of 'Meja' is...", options: ["Table", "Chair", "Book", "Pen"], answer: "Table" }
+    ipas: [
+      { id: "g2s1", type: 'multiple-choice', question: "Bagian tubuh burung yang digunakan untuk terbang adalah...", options: ["Ekor", "Sayap", "Paruh", "Cakar"], answer: "Sayap" },
+      { id: "g2s2", type: 'multiple-choice', question: "Benda yang bentuknya berubah mengikuti tempatnya adalah...", options: ["Batu", "Kayu", "Air", "Besi"], answer: "Air" }
     ]
   },
   grade3: {
     matematika: [
-      { id: "g3m1", type: 'multiple-choice', question: "100 + 200 = ...", options: ["300", "400", "500", "600"], answer: "300" },
-      { id: "g3e1", type: 'essay', question: "Sudut siku-siku besarnya ... derajat.", answer: "90" }
+      { id: "g3m1", type: 'multiple-choice', question: "Hasil dari 12 x 5 adalah...", options: ["50", "55", "60", "65"], answer: "60" },
+      { id: "g3m2", type: 'multiple-choice', question: "Bilangan 3.450 dibaca...", options: ["Tiga ratus empat puluh lima", "Tiga ribu empat ratus lima puluh", "Tiga ribu empat puluh lima", "Tiga ratus lima puluh"], answer: "Tiga ribu empat ratus lima puluh" },
+      { id: "g3m3", type: 'multiple-choice', question: "Sudut yang besarnya 90 derajat disebut...", options: ["Sudut lancip", "Sudut tumpul", "Sudut siku-siku", "Sudut lurus"], answer: "Sudut siku-siku" },
+      { id: "g3e1", type: 'essay', question: "Berapa hasil dari 100 dibagi 4?", answer: "25" }
     ],
-    blp: [
-      { id: "g3b1", type: 'multiple-choice', question: "Bahasa Lampungnya 'Ikan' adalah...", options: ["Iwa", "Mangan", "Lapah", "Sukur"], answer: "Iwa" },
-      { id: "g3b2", type: 'multiple-choice', question: "Alat musik petik khas Lampung adalah...", options: ["Angklung", "Gamolan", "Kecapi", "Gitar"], answer: "Kecapi" },
-      { id: "g3e1", type: 'essay', question: "Sebutkan satu pelabuhan di Lampung!", answer: "Bakauheni" }
+    indonesia: [
+      { id: "g3i1", type: 'multiple-choice', question: "Lawan kata dari 'Haus' adalah...", options: ["Lapar", "Kenyang", "Puas", "Segar"], answer: "Puas" },
+      { id: "g3i2", type: 'multiple-choice', question: "Tanda baca yang digunakan untuk bertanya adalah...", options: ["!", "?", ".", ","], answer: "?" },
+      { id: "g3e1", type: 'essay', question: "Apa sebutan untuk buku yang berisi kumpulan peta?", answer: "Atlas" }
+    ],
+    ipas: [
+      { id: "g3s1", type: 'multiple-choice', question: "Makhluk hidup yang dapat membuat makanan sendiri adalah...", options: ["Hewan", "Manusia", "Tumbuhan", "Jamur"], answer: "Tumbuhan" },
+      { id: "g3s2", type: 'multiple-choice', question: "Benda gas memiliki sifat...", options: ["Bentuk tetap", "Menempati ruang", "Terlihat jelas", "Sulit bergerak"], answer: "Menempati ruang" },
+      { id: "g3e1", type: 'essay', question: "Sebutkan 3 kebutuhan utama makhluk hidup!", answer: "Udara, air, makanan" }
+    ],
+    ppkn: [
+      { id: "g3p1", type: 'multiple-choice', question: "Sila kedua Pancasila dilambangkan dengan...", options: ["Bintang", "Rantai", "Pohon Beringin", "Padi dan Kapas"], answer: "Rantai" },
+      { id: "g3p2", type: 'multiple-choice', question: "Semboyan Bangsa Indonesia adalah...", options: ["Maju Gentar", "Bhinneka Tunggal Ika", "Tut Wuri Handayani", "Merdeka atau Mati"], answer: "Bhinneka Tunggal Ika" }
     ]
   },
   grade4: {
-    pai: [
-      { id: "g4p1", type: 'multiple-choice', question: "Malaikat Jibril bertugas...", options: ["Membagi rezeki", "Meniup sangkakala", "Menyampaikan wahyu", "Mencabut nyawa"], answer: "Menyampaikan wahyu" },
-      { id: "g4p2", type: 'essay', question: "Membasuh wajah sebelum shalat disebut...", answer: "Wudhu" }
-    ],
     matematika: [
-      { id: "g4m1", type: 'multiple-choice', question: "Luas persegi dengan sisi 5 cm adalah...", options: ["10", "15", "20", "25"], answer: "25" },
-      { id: "g4e1", type: 'essay', question: "Berapa cm dalam 1 meter?", answer: "100" }
-    ],
-    blp: [
-      { id: "g4b1", type: 'multiple-choice', question: "Pahlawan Nasional dari Lampung adalah...", options: ["Imam Bonjol", "Radin Intan II", "Diponegoro", "Kartini"], answer: "Radin Intan II" },
-      { id: "g4b2", type: 'multiple-choice', question: "Kain khas Lampung yang disulam memakai benang emas disebut...", options: ["Batik", "Ulos", "Tapis", "Songket"], answer: "Tapis" },
-      { id: "g4b3", type: 'essay', question: "Lampung beribukota di...", answer: "Bandar Lampung" },
-      { id: "g4e1", type: 'essay', question: "Sebutkan makanan khas Lampung dari ikan yang difermentasi!", answer: "Seruit" }
+      { id: "g4m1", type: 'multiple-choice', question: "KPK dari 4 dan 6 adalah...", options: ["12", "24", "10", "8"], answer: "12" },
+      { id: "g4m2", type: 'multiple-choice', question: "Luas persegi dengan sisi 10 cm adalah...", options: ["20 cm²", "40 cm²", "100 cm²", "200 cm²"], answer: "100 cm²" },
+      { id: "g4e1", type: 'essay', question: "Berapa hasil dari 1.500 + 2.750?", answer: "4250" }
     ],
     ipas: [
-      { id: "g4s1", type: 'multiple-choice', question: "Bagian tumbuhan yang menyerap air adalah...", options: ["Batang", "Daun", "Akar", "Bunga"], answer: "Akar" },
-      { id: "g4e1", type: 'essay', question: "Peristiwa cair ke padat disebut...", answer: "Membeku" }
+      { id: "g4s1", type: 'multiple-choice', question: "Proses pembuatan makanan pada tumbuhan disebut...", options: ["Oksidasi", "Fotosintesis", "Respirasi", "Penguapan"], answer: "Fotosintesis" },
+      { id: "g4s2", type: 'multiple-choice', question: "Gaya yang terjadi saat kita mengerem sepeda adalah...", options: ["Gaya pegas", "Gaya otot", "Gaya gesek", "Gaya magnet"], answer: "Gaya gesek" },
+      { id: "g4e1", type: 'essay', question: "Sebutkan perubahan wujud benda dari cair ke gas!", answer: "Menguap" }
     ]
   },
   grade5: {
     matematika: [
-      { id: "g5m1", type: 'multiple-choice', question: "1/2 + 1/4 = ...", options: ["1/6", "2/6", "3/4", "1/2"], answer: "3/4" },
-      { id: "g5e1", type: 'essay', question: "Luas segitiga = 1/2 x alas x ...", answer: "Tinggi" }
-    ],
-    blp: [
-      { id: "g5b1", type: 'multiple-choice', question: "Masyarakat Lampung terbagi dua adat besar, yaitu Pepadun dan...", options: ["Saibatin", "Jawa", "Sunda", "Bali"], answer: "Saibatin" },
-      { id: "g5b2", type: 'multiple-choice', question: "Kabupaten di Lampung yang terkenal dengan kopi adalah...", options: ["Pesisir Barat", "Lampung Barat", "Metro", "Tubaba"], answer: "Lampung Barat" },
-      { id: "g5e1", type: 'essay', question: "Apa arti dari 'Sang Bumi Ruwa Jurai'?", answer: "Satu bumi dua macam warga" }
+      { id: "g5m1", type: 'multiple-choice', question: "Hasil dari 1/2 + 1/4 adalah...", options: ["2/6", "3/4", "1/4", "3/6"], answer: "3/4" },
+      { id: "g5m2", type: 'multiple-choice', question: "Kubus memiliki rusuk sebanyak...", options: ["6", "8", "10", "12"], answer: "12" }
     ],
     ipas: [
-      { id: "g5s1", type: 'multiple-choice', question: "Planet terdekat dari matahari adalah...", options: ["Bumi", "Mars", "Merkurius", "Venus"], answer: "Merkurius" }
+      { id: "g5s1", type: 'multiple-choice', question: "Alat pernapasan pada ikan adalah...", options: ["Paru-paru", "Trakea", "Insang", "Kulit"], answer: "Insang" },
+      { id: "g5s2", type: 'multiple-choice', question: "Planet terbesar dalam tata surya kita adalah...", options: ["Saturnus", "Jupiter", "Bumi", "Neptunus"], answer: "Jupiter" }
     ]
   },
   grade6: {
     matematika: [
-      { id: "g6m1", type: 'multiple-choice', question: "Volume kubus dengan sisi 10 cm adalah...", options: ["100", "600", "1000", "10"], answer: "1000" },
-      { id: "g6e1", type: 'essay', question: "Akar pangkat dua dari 144 adalah...", answer: "12" }
-    ],
-    blp: [
-      { id: "g6b1", type: 'multiple-choice', question: "Gunung di Selat Sunda yang meletus dahsyat tahun 1883 adalah...", options: ["Gunung Pesagi", "Gunung Krakatau", "Gunung Tanggamus", "Gunung Betung"], answer: "Gunung Krakatau" },
-      { id: "g6b2", type: 'multiple-choice', question: "Berapa jumlah lekuk pada Siger Lampung?", options: ["5", "7", "9", "11"], answer: "9" },
-      { id: "g6e1", type: 'essay', question: "Sebutkan nama bupati pertama di daerahmu!", answer: "Bervariasi" },
-      { id: "g6e2", type: 'essay', question: "Apa nama menara ikonik di Lampung?", answer: "Menara Siger" }
+      { id: "g6m1", type: 'multiple-choice', question: "Akar pangkat tiga dari 1.000 adalah...", options: ["10", "100", "5", "20"], answer: "10" },
+      { id: "g6m2", type: 'multiple-choice', question: "Hasil dari -10 + 15 - 5 adalah...", options: ["10", "5", "0", "-10"], answer: "0" }
     ],
     ipas: [
-      { id: "g6s1", type: 'multiple-choice', question: "Peristiwa bumi mengelilingi matahari disebut...", options: ["Rotasi", "Revolusi", "Evolusi", "Oksidasi"], answer: "Revolusi" }
+      { id: "g6s1", type: 'multiple-choice', question: "Bapak Proklamator Indonesia adalah...", options: ["Soeharto", "Ir. Soekarno", "Moh. Hatta", "Soekarno dan Moh. Hatta"], answer: "Soekarno dan Moh. Hatta" },
+      { id: "g6e1", type: 'essay', question: "Apa nama peristiwa bumi berputar pada porosnya?", answer: "Rotasi" }
     ]
   }
 };
 
-// --- DATA UNIFORMITY LOGIC ---
-
-const subjects = ['pai', 'matematika', 'indonesia', 'ppkn', 'ipas', 'blp', 'english'];
-const grades = ['grade1', 'grade2', 'grade3', 'grade4', 'grade5', 'grade6'];
-
-const fillTo25 = (grade: string, subject: string, manual: Question[]): Question[] => {
-  const mcs = manual.filter(q => q.type === 'multiple-choice');
-  const essays = manual.filter(q => q.type === 'essay');
-
-  const finalMCs = [...mcs];
-  const finalEssays = [...essays];
-
-  // If missing, generate distinct unique-ish questions based on grade level
-  const gNum = parseInt(grade.replace('grade', ''));
-  
-  while(finalMCs.length < 15) {
-    const i = finalMCs.length;
-    finalMCs.push({
-      id: `${grade}-${subject}-mc-${i}`,
-      type: 'multiple-choice',
-      question: `Pertanyaan Kritis ${i+1} ${subject.toUpperCase()} (Tingkat SD Kelas ${gNum}) tentang materi dasar.`,
-      options: ["Jawaban Benar", "Salah 1", "Salah 2", "Salah 3"],
-      answer: "Jawaban Benar"
-    });
-  }
-
-  while(finalEssays.length < 10) {
-    const i = finalEssays.length;
-    finalEssays.push({
-      id: `${grade}-${subject}-e-${i}`,
-      type: 'essay',
-      question: `Jelaskan secara singkat pemahamanmu tentang materi ${subject.toUpperCase()} ke-${i+1} di Kelas ${gNum}!`,
-      answer: "Jawaban"
-    });
-  }
-
-  return [...finalMCs, ...finalEssays];
+// Objek untuk menampung subjek yang tidak didefinisikan agar tidak error
+const fallbackData: Record<string, Question[]> = {
+  matematika: [{ id: "fb1", type: "multiple-choice", question: "1 + 1 = ...", options: ["1", "2", "3", "4"], answer: "2" }],
+  indonesia: [{ id: "fb2", type: "multiple-choice", question: "Ibukota Indonesia adalah...", options: ["Bandung", "Surabaya", "Jakarta", "Medan"], answer: "Jakarta" }],
+  ipas: [{ id: "fb3", type: "multiple-choice", question: "Energi panas terbesar bagi bumi adalah...", options: ["Bulan", "Bintang", "Matahari", "Lampu"], answer: "Matahari" }],
+  ppkn: [{ id: "fb4", type: "multiple-choice", question: "Dasar negara kita adalah...", options: ["UUD 1945", "Pancasila", "Proklamasi", "Sumpah Pemuda"], answer: "Pancasila" }],
+  blp: [{ id: "fb5", type: "multiple-choice", question: "Siger adalah simbol daerah...", options: ["Lampung", "Jawa", "Bali", "Papua"], answer: "Lampung" }],
+  english: [{ id: "fb6", type: "multiple-choice", question: "English of 'Buku' is...", options: ["Pen", "Pencil", "Book", "Bag"], answer: "Book" }]
 };
 
-const fullQuizData: GradeData = {} as GradeData;
-grades.forEach(g => {
-  fullQuizData[g] = {};
-  subjects.forEach(s => {
-    fullQuizData[g][s] = fillTo25(g, s, rawData[g]?.[s] || []);
+export const quizData: GradeData = {} as GradeData;
+
+['grade1', 'grade2', 'grade3', 'grade4', 'grade5', 'grade6'].forEach(grade => {
+  quizData[grade] = {};
+  ['matematika', 'indonesia', 'ppkn', 'ipas', 'blp', 'english'].forEach(subject => {
+    // Gunakan data asli jika ada, kalau tidak ada pakai fallback yang valid (bukan template ngaco)
+    quizData[grade][subject] = rawData[grade]?.[subject] || fallbackData[subject] || fallbackData.matematika;
   });
 });
-
-export const quizData = fullQuizData;
