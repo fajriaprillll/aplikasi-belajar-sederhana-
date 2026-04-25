@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 import BackgroundShapes from "@/components/ui/BackgroundShapes";
+import { Providers } from "@/components/Providers";
 
 export default function RootLayout({
   children,
@@ -22,8 +23,10 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${inter.variable} antialiased`}>
       <body>
-        <BackgroundShapes />
-        {children}
+        <Providers>
+          <BackgroundShapes />
+          {children}
+        </Providers>
       </body>
     </html>
   );

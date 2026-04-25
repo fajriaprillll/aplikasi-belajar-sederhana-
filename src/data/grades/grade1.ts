@@ -3,11 +3,11 @@ import { SubjectData } from "../questions";
 export const grade1Data: SubjectData = {
   pai: [
     // Multiple Choice (15)
-    { id: 'grade1-pai-mc-1', type: 'multiple-choice', question: 'Sebelum makan kita membaca?', options: ['Basmalah', 'Hamdalah', 'Takbir', 'Salam'], answer: 'Basmalah' },
-    { id: 'grade1-pai-mc-2', type: 'multiple-choice', question: 'Sesudah makan kita membaca?', options: ['Basmalah', 'Hamdalah', 'Istighfar', 'Amin'], answer: 'Hamdalah' },
-    { id: 'grade1-pai-mc-3', type: 'multiple-choice', question: 'Tuhan kita adalah?', options: ['Nabi', 'Malaikat', 'Allah', 'Manusia'], answer: 'Allah' },
+    { id: 'grade1-pai-mc-1', type: 'multiple-choice', question: 'Sebelum makan kita membaca?', options: ['Basmalah', 'Hamdalah', 'Takbir', 'Salam'], answer: 'Basmalah', explanation: 'Membaca Basmalah (Bismillah) adalah sunnah Rasulullah sebelum memulai kebaikan seperti makan.' },
+    { id: 'grade1-pai-mc-2', type: 'multiple-choice', question: 'Sesudah makan kita membaca?', options: ['Basmalah', 'Hamdalah', 'Istighfar', 'Amin'], answer: 'Hamdalah', explanation: 'Hamdalah (Alhamdulillah) adalah ungkapan syukur kita kepada Allah setelah selesai makan.' },
+    { id: 'grade1-pai-mc-3', type: 'multiple-choice', question: 'Tuhan kita adalah?', options: ['Nabi', 'Malaikat', 'Allah', 'Manusia'], answer: 'Allah', explanation: 'Allah SWT adalah Tuhan Yang Maha Esa yang menciptakan alam semesta.' },
     { id: 'grade1-pai-mc-4', type: 'multiple-choice', question: 'Agama kita adalah?', options: ['Islam', 'Kristen', 'Hindu', 'Budha'], answer: 'Islam' },
-    { id: 'grade1-pai-mc-5', type: 'multiple-choice', question: 'Nabi terakhir kita adalah?', options: ['Adam', 'Ibrahim', 'Musa', 'Muhammad'], answer: 'Muhammad' },
+    { id: 'grade1-pai-mc-5', type: 'multiple-choice', question: 'Nabi terakhir kita adalah?', options: ['Adam', 'Ibrahim', 'Musa', 'Muhammad'], answer: 'Muhammad', explanation: 'Nabi Muhammad SAW adalah penutup para nabi (Khatamun Nabiyyin).' },
     { id: 'grade1-pai-mc-6', type: 'multiple-choice', question: 'Kitab suci umat Islam adalah?', options: ['Al-Quran', 'Injil', 'Taurat', 'Zabur'], answer: 'Al-Quran' },
     { id: 'grade1-pai-mc-7', type: 'multiple-choice', question: 'Rukun Islam ada berapa?', options: ['3', '4', '5', '6'], answer: '5' },
     { id: 'grade1-pai-mc-8', type: 'multiple-choice', question: 'Rukun Iman ada berapa?', options: ['5', '6', '7', '10'], answer: '6' },

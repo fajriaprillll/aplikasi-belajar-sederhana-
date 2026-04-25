@@ -1,94 +1,142 @@
-'use client';
-
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import { useState } from 'react';
 
 interface MascotProps {
   mood: 'idle' | 'happy' | 'sad' | 'thinking';
   message: string;
+  onClick?: () => void;
 }
 
-const EMOJIS = {
-  idle: '😊',
-  happy: '🤩',
-  sad: '🥺',
-  thinking: '🤔'
-};
+export default function Mascot({ mood, message, onClick }: MascotProps) {
+  const [isScanning, setIsScanning] = useState(false);
 
-export default function Mascot({ mood, message }: MascotProps) {
+  const handleClick = () => {
+    if (isScanning) return;
+    setIsScanning(true);
+    setTimeout(() => setIsScanning(false), 1500);
+    if (onClick) onClick();
+  };
+
   return (
-    <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[100] flex flex-col items-end pointer-events-none select-none">
-      {/* Speech Bubble */}
+    <div className="fixed bottom-4 right-4 md:bottom-10 md:right-10 z-[100] flex flex-col items-end select-none perspective-[1000px]">
+      {/* Speech Bubble - Minimalist & Sleek */}
       <AnimatePresence mode="wait">
         <motion.div
           key={message}
-          initial={{ opacity: 0, scale: 0.5, y: 30, x: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-          exit={{ opacity: 0, scale: 0.5, y: 20, x: 10 }}
-          className="mb-3 md:mb-6 mr-2 md:mr-4 bg-slate-900 text-white px-5 md:px-8 py-3 md:py-5 rounded-[1.5rem] md:rounded-[2.5rem] rounded-br-none shadow-2xl relative max-w-[180px] md:max-w-[240px] border border-white/10"
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 10, scale: 0.9 }}
+          transition={{ type: "spring", damping: 20, stiffness: 300 }}
+          className="mb-4 md:mb-6 mr-2 bg-slate-900/90 backdrop-blur-md text-white px-5 md:px-6 py-3 md:py-4 rounded-[1.5rem] md:rounded-[2rem] rounded-br-none shadow-xl relative max-w-[160px] md:max-w-[220px] border border-white/10 pointer-events-none"
         >
-          <div className="absolute top-0 right-0 p-1 md:p-2 opacity-20">
-            <Sparkles className="w-3 h-3 md:w-4 md:h-4" />
-          </div>
-          <p className="text-xs md:text-base font-bold leading-relaxed tracking-tight">
+          <p className="text-xs md:text-sm font-medium leading-relaxed text-center">
             {message}
           </p>
-          {/* Bubble Tail */}
-          <div className="absolute -bottom-2 right-0 w-6 h-6 md:w-8 md:h-8 bg-slate-900 rotate-12" 
+          <div className="absolute -bottom-1.5 right-0 w-4 h-4 bg-slate-900/90 rotate-12" 
                style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%)' }} />
         </motion.div>
       </AnimatePresence>
 
-      {/* Robot Character */}
+      {/* EVE Character - Smooth & Elegant */}
       <motion.div
-        animate={mood === 'happy' ? {
-          y: [0, -20, 0],
-          scale: [1, 1.1, 1],
-        } : mood === 'thinking' ? {
-          rotate: [0, -10, 10, -10, 0],
-        } : {
-          y: [0, -5, 0],
-        }}
-        transition={{
-          duration: mood === 'happy' ? 0.4 : 4,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="group relative"
+        whileHover={{ y: -5 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={handleClick}
+        className="relative cursor-pointer pointer-events-auto flex flex-col items-center preserve-3d"
       >
-        {/* Glow Effect */}
-        <div className="absolute inset-0 bg-primary/20 blur-xl md:blur-2xl rounded-full scale-125 md:scale-150 animate-pulse" />
-        
-        <div className="w-16 h-16 md:w-32 md:h-32 bg-gradient-to-br from-slate-800 to-slate-950 rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl flex flex-col items-center justify-center border-2 md:border-4 border-white/10 overflow-hidden relative">
-          {/* Scanning Line */}
+        {/* Floating Head */}
+        <motion.div
+          animate={{
+            y: mood === 'happy' ? [0, -5, 0] : [0, -3, 0],
+            rotateZ: mood === 'happy' ? [0, 10, -10, 0] : isScanning ? [0, 5, -5, 0] : 0,
+            rotateX: mood === 'sad' ? 20 : 0
+          }}
+          transition={{ 
+            y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+            rotateZ: { duration: mood === 'happy' ? 0.3 : 2, repeat: mood === 'happy' ? 2 : 0 }
+          }}
+          className="w-10 h-7 md:w-16 md:h-11 bg-white rounded-[50%] shadow-lg border border-slate-100 relative overflow-hidden flex items-center justify-center mb-1 z-30 preserve-3d"
+        >
+          {/* Black Face Screen */}
+          <div className="w-[85%] h-[80%] bg-[#0a0a0a] rounded-[42%] flex items-center justify-center gap-1.5 md:gap-3 relative shadow-inner overflow-hidden">
+             {/* Subtle Scan Line */}
+             {isScanning && (
+               <motion.div 
+                 initial={{ top: '-100%' }}
+                 animate={{ top: '100%' }}
+                 transition={{ duration: 1, ease: "linear" }}
+                 className="absolute inset-x-0 h-1 bg-cyan-400/40 blur-[1px] z-10"
+               />
+             )}
+
+            {/* Glowing Eyes - Change shape based on mood */}
+            <motion.div 
+              animate={mood === 'happy' ? {
+                scaleY: [1, 0.5, 1],
+                height: [4, 3, 4],
+                borderRadius: "50% 50% 10% 10%" // Smiling eyes
+              } : mood === 'sad' ? {
+                scaleY: 0.5,
+                y: 2
+              } : {
+                scaleY: [1, 0.1, 1],
+              }}
+              transition={{ duration: 4, repeat: Infinity, repeatDelay: 3 }}
+              className="w-1.5 h-1.5 md:w-3.5 md:h-3.5 bg-cyan-400 rounded-full shadow-[0_0_12px_#22d3ee]" 
+            />
+            <motion.div 
+              animate={mood === 'happy' ? {
+                scaleY: [1, 0.5, 1],
+                height: [4, 3, 4],
+                borderRadius: "50% 50% 10% 10%" // Smiling eyes
+              } : mood === 'sad' ? {
+                scaleY: 0.5,
+                y: 2
+              } : {
+                scaleY: [1, 0.1, 1],
+              }}
+              transition={{ duration: 4, repeat: Infinity, repeatDelay: 3 }}
+              className="w-1.5 h-1.5 md:w-3.5 md:h-3.5 bg-cyan-400 rounded-full shadow-[0_0_12px_#22d3ee]" 
+            />
+          </div>
+          {/* Top Shine */}
+          <div className="absolute top-0.5 left-1/4 w-1/2 h-1 bg-white/30 rounded-full blur-[1px]" />
+        </motion.div>
+
+        {/* Sleek Body */}
+        <motion.div
+          animate={{
+            y: mood === 'happy' ? [0, -10, 0] : [0, -6, 0],
+            rotateZ: mood === 'happy' ? [0, 2, -2, 0] : 0,
+            scale: mood === 'sad' ? 0.95 : 1
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="w-12 h-16 md:w-20 md:h-28 bg-gradient-to-b from-white to-slate-50 rounded-[50%_50%_45%_45%] shadow-[inset_-4px_-8px_16px_rgba(0,0,0,0.05),0_15px_30px_rgba(0,0,0,0.1)] border border-slate-100 relative z-20 preserve-3d"
+        >
+          {/* Arms - More subtle */}
           <motion.div 
-            animate={{ top: ['0%', '100%', '0%'] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-            className="absolute left-0 w-full h-0.5 md:h-1 bg-primary/30 blur-sm z-10" 
+            animate={mood === 'happy' ? { rotateZ: [-20, -40, -20] } : { rotateZ: [-5, 5, -5] }}
+            className="absolute -left-1 top-4 w-2 h-8 md:w-3 md:h-14 bg-white rounded-full border border-slate-50 origin-top shadow-sm" 
+          />
+          <motion.div 
+            animate={mood === 'happy' ? { rotateZ: [20, 40, 20] } : { rotateZ: [5, -5, 5] }}
+            className="absolute -right-1 top-4 w-2 h-8 md:w-3 md:h-14 bg-white rounded-full border border-slate-100 origin-top shadow-sm" 
           />
           
-          <div className="flex flex-col items-center gap-0.5 md:gap-1 z-20">
-            <Bot size={mood === 'happy' ? 32 : 24} className="text-primary mb-0.5 md:mb-1 transition-all md:w-12 md:h-12" />
-            <motion.span
-              key={mood}
-              initial={{ scale: 0, rotate: -20 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-              className="text-xl md:text-4xl"
-            >
-              {EMOJIS[mood]}
-            </motion.span>
-          </div>
-        </div>
-        
-        {/* Antenna */}
-        <motion.div 
-          animate={{ rotate: [-5, 5, -5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute -top-2 md:-top-4 left-1/2 -translate-x-1/2 w-0.5 md:w-1 h-3 md:h-6 bg-slate-700 rounded-full"
-        >
-          <div className="absolute -top-0.5 -left-0.5 md:-top-1 md:-left-1 w-1.5 md:h-3 md:w-3 h-1.5 bg-red-500 rounded-full shadow-[0_0_10px_rgba(239,68,68,0.8)] animate-pulse" />
+          {/* Center Light */}
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-4 h-1 bg-cyan-100/30 rounded-full blur-[1px]" />
         </motion.div>
+
+        {/* Shadow */}
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.1, 1], 
+            opacity: [0.1, 0.2, 0.1] 
+          }}
+          transition={{ duration: 3, repeat: Infinity }}
+          className="w-10 h-2 md:w-16 md:h-3 bg-slate-900/10 rounded-[50%] blur-md mt-3" 
+        />
       </motion.div>
     </div>
   );

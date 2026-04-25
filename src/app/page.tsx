@@ -33,10 +33,12 @@ import {
 } from "lucide-react";
 import { quizData, Question } from "@/data/questions";
 import { playUISound } from "@/lib/uiSounds";
-import Mascot from "@/components/ui/Mascot";
+import dynamic from "next/dynamic";
+import { useEve } from "@/context/EveContext";
+const Mascot = dynamic(() => import("@/components/ui/EveRobot3D"), { ssr: false });
 
 // --- Types ---
-type Screen = "HOME" | "GRADE_SELECT" | "SUBJECT_SELECT" | "QUIZ" | "RESULT" | "REVIEW";
+type Screen = "HOME" | "GRADE_SELECT" | "MODE_SELECT" | "SUBJECT_SELECT" | "QUIZ" | "RESULT" | "REVIEW";
 
 interface QuizHistory {
   question: string;
@@ -44,6 +46,7 @@ interface QuizHistory {
   correctAnswer: string;
   isCorrect: boolean;
   type: string;
+  explanation?: string;
 }
 
 const Confetti = () => (
@@ -131,9 +134,8 @@ export default function App() {
   const [quizHistory, setQuizHistory] = useState<QuizHistory[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Mascot State
-  const [mascotMood, setMascotMood] = useState<'idle' | 'happy' | 'sad' | 'thinking'>('idle');
-  const [mascotMessage, setMascotMessage] = useState<string>('Halo! Ayo belajar bersama robot!');
+  // Mascot Context
+  const { setScreen: setEveScreen, setAnswerStatus, setEveState } = useEve();
 
   useEffect(() => {
     const saved = localStorage.getItem("last_quiz_score");
@@ -146,7 +148,7 @@ export default function App() {
       if (timeLeft > 0) {
         timerRef.current = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
       } else {
-        processAnswer("TIDAK ADA JAWABAN (WAKTU HABIS)");
+        processAnswer(""); // Kirim jawaban kosong jika waktu habis
       }
     }
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
@@ -154,6 +156,7 @@ export default function App() {
 
   const resetGame = () => {
     setScreen("HOME");
+    setEveScreen("HOME");
     setSelectedGrade("");
     setSelectedSubject("");
     setCurrentQuestionIndex(0);
@@ -164,8 +167,7 @@ export default function App() {
     setSelectedOption(null);
     setEssayAnswer("");
     setQuizHistory([]);
-    setMascotMood('idle');
-    setMascotMessage('Halo! Ayo belajar bersama robot!');
+    setAnswerStatus('idle');
   };
 
   const startQuiz = (grade: string, subject: string) => {
@@ -175,11 +177,48 @@ export default function App() {
     setScore(0);
     setCorrectAnswers(0);
     setScreen("QUIZ");
+    setEveScreen("QUIZ");
     setEssayAnswer("");
     setQuizHistory([]);
     setTimeLeft(30);
-    setMascotMood('idle');
-    setMascotMessage('Semangat ya mengerjakannya!');
+    setAnswerStatus('idle');
+  };
+
+  const normalizeText = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  };
+
+  const numberToWord: Record<string, string> = {
+    "0": "nol", "1": "satu", "2": "dua", "3": "tiga", "4": "empat", "5": "lima",
+    "6": "enam", "7": "tujuh", "8": "delapan", "9": "sembilan", "10": "sepuluh"
+  };
+
+  const checkEssayAnswer = (user: string, correct: string) => {
+    const normUser = normalizeText(user);
+    const normCorrect = normalizeText(correct);
+
+    // Split options by / if they exist
+    const options = correct.split('/').map(opt => normalizeText(opt));
+    
+    // Check if user answer matches any option or is contained in an option (for names)
+    return options.some(opt => {
+      // Direct match
+      if (normUser === opt) return true;
+      
+      // Numeric check (if user types '4' and opt is 'empat')
+      if (numberToWord[normUser] === opt || numberToWord[opt] === normUser) return true;
+
+      // Partial match for longer answers (e.g., 'allah' matches 'allah swt')
+      if (opt.length > 3 && normUser.length > 3) {
+        if (opt.includes(normUser) || normUser.includes(opt)) return true;
+      }
+
+      return false;
+    });
   };
 
   const processAnswer = (userAnswer: string) => {
@@ -192,7 +231,7 @@ export default function App() {
     
     const isCorrect = currentQ.type === 'multiple-choice' 
       ? userAnswer === currentQ.answer 
-      : userAnswer.toLowerCase().trim() === currentQ.answer.toLowerCase().trim();
+      : checkEssayAnswer(userAnswer, currentQ.answer);
 
     // Store history
     setQuizHistory(prev => [...prev, {
@@ -200,20 +239,27 @@ export default function App() {
       userAnswer: userAnswer,
       correctAnswer: currentQ.answer,
       isCorrect,
-      type: currentQ.type
+      type: currentQ.type,
+      explanation: currentQ.explanation // Add explanation to history
     }]);
 
     if (isCorrect) {
       playUISound('success');
-      setMascotMood('happy');
-      setMascotMessage('Wih, jawabanmu BENAR!');
+      setAnswerStatus('correct');
+      setEveState('Wih, jawabanmu BENAR! Hebat banget!', 'happy');
       setScore(prev => prev + 10);
       setCorrectAnswers(prev => prev + 1);
       setFeedback("CORRECT");
     } else {
       playUISound('wrong');
-      setMascotMood('sad');
-      setMascotMessage('Yah, kurang tepat. Coba lagi ya!');
+      setAnswerStatus('wrong');
+      const isTimeout = userAnswer === "";
+      setEveState(
+        isTimeout 
+          ? 'Yah, waktunya habis! Yuk lebih cepat di soal berikutnya! ⏰' 
+          : 'Yah, kurang tepat. Jangan menyerah, coba lagi ya!', 
+        'sad'
+      );
       setFeedback("WRONG");
     }
 
@@ -223,19 +269,33 @@ export default function App() {
       setSelectedOption(null);
       setEssayAnswer("");
       setTimeLeft(30);
-      setMascotMood('idle');
+      setAnswerStatus('idle');
       
       if (currentQuestionIndex + 1 < questions.length) {
         setCurrentQuestionIndex(prev => prev + 1);
-        setMascotMessage(`Soal nomor ${currentQuestionIndex + 2}, ayo fokus!`);
+        setAnswerStatus('idle');
       } else {
         const finalScore = score + (isCorrect ? 10 : 0);
         localStorage.setItem("last_quiz_score", finalScore.toString());
         setLastScore(finalScore);
         setScreen("RESULT");
+        setEveScreen("RESULT");
         playUISound('success');
       }
     }, 1500);
+  };
+
+  const handleMascotClick = () => {
+    playUISound('click');
+    const messages = [
+      "Wah, kamu semangat banget! Terusin ya! ✨",
+      "Ayo terus belajar, kamu pasti bisa jadi juara kelas! 🎓",
+      "Jangan menyerah, aku selalu dukung kamu di sini! 💪",
+      "Belajar itu seru lho! Kayak lagi petualangan! 🚀",
+      "Keren! Kamu calon orang sukses masa depan! 🌟",
+      "Wow! Konsentrasi kamu bener-bener hebat! 🧠"
+    ];
+    setEveState(messages[Math.floor(Math.random() * messages.length)], 'happy');
   };
 
   const springTransition = { type: "spring", stiffness: 260, damping: 20 } as const;
@@ -263,8 +323,8 @@ export default function App() {
       <div className="bg-blob blob-2 hidden md:block" />
       <div className="bg-blob blob-3 hidden md:block" />
       
-      {/* Mascot Robot - Smaller on mobile */}
-      <Mascot mood={mascotMood} message={mascotMessage} />
+      {/* EVE Robot 3D */}
+      <Mascot onClick={handleMascotClick} />
       
       <AnimatePresence mode="wait">
         {screen === "HOME" && (
@@ -320,7 +380,7 @@ export default function App() {
                 <motion.button 
                   whileHover={{ scale: 1.05, y: -5 }} 
                   whileTap={{ scale: 0.95 }} 
-                  onClick={() => { playUISound('click'); setScreen("GRADE_SELECT"); }} 
+                  onClick={() => { playUISound('click'); setScreen("GRADE_SELECT"); setEveScreen("GRADE_SELECT"); }} 
                   className="group relative w-full max-w-sm py-6 md:py-8 px-8 md:px-12 bg-slate-900 text-white rounded-[2rem] md:rounded-[3rem] font-black text-2xl md:text-3xl shadow-2xl shadow-indigo-200/50 flex items-center justify-center gap-4 overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -341,7 +401,7 @@ export default function App() {
             transition={springTransition} className="w-full max-w-4xl space-y-10 md:space-y-16 z-10 px-4 py-10"
           >
             <div className="flex flex-col items-center text-center gap-4 md:gap-6">
-              <button onClick={() => { playUISound('pop'); setScreen("HOME"); }} className="group flex items-center gap-3 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-white/50 glass hover:bg-white transition-all font-bold text-slate-500 text-sm md:text-base"><ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Kembali</button>
+              <button onClick={() => { playUISound('pop'); setScreen("HOME"); setEveScreen("HOME"); }} className="group flex items-center gap-3 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-white/50 glass hover:bg-white transition-all font-bold text-slate-500 text-sm md:text-base"><ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Kembali</button>
               <h2 className="text-4xl md:text-6xl font-black text-gradient tracking-tight">Pilih Kelas</h2>
               <p className="text-slate-500 font-medium text-sm md:text-base">Pilih tingkatan belajarmu sekarang!</p>
             </div>
@@ -349,7 +409,7 @@ export default function App() {
               {[1, 2, 3, 4, 5, 6].map((num) => (
                 <motion.button
                   key={num} whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }}
-                  onClick={() => { playUISound('click'); setSelectedGrade(`grade${num}`); setScreen("SUBJECT_SELECT"); }}
+                  onClick={() => { playUISound('click'); setSelectedGrade(`grade${num}`); setScreen("MODE_SELECT"); setEveScreen("MODE_SELECT"); }}
                   className="glass group relative flex flex-col items-center justify-center p-8 md:p-12 rounded-[2.5rem] md:rounded-[4rem] shadow-xl hover:shadow-primary/20 transition-all overflow-hidden border-2 border-transparent hover:border-primary/20"
                 >
                   <div className="absolute top-0 right-0 p-4 md:p-6 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -365,6 +425,51 @@ export default function App() {
           </motion.div>
         )}
 
+        {screen === "MODE_SELECT" && (
+          <motion.div 
+            key="mode"
+            initial={{ opacity: 0, scale: 0.9 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            exit={{ opacity: 0, scale: 1.1 }}
+            transition={springTransition} className="w-full max-w-4xl space-y-10 md:space-y-16 z-10 px-4 py-10"
+          >
+            <div className="flex flex-col items-center text-center gap-4 md:gap-6">
+              <button onClick={() => { playUISound('pop'); setScreen("GRADE_SELECT"); setEveScreen("GRADE_SELECT"); }} className="group flex items-center gap-3 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-white/50 glass hover:bg-white transition-all font-bold text-slate-500 text-sm md:text-base"><ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Ganti Kelas</button>
+              <h2 className="text-4xl md:text-6xl font-black text-gradient tracking-tight">Pilih Mode</h2>
+              <p className="text-slate-500 font-medium">Mau latihan santai atau langsung ujian?</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }}
+                onClick={() => { playUISound('click'); setScreen("SUBJECT_SELECT"); setEveScreen("SUBJECT_SELECT"); }}
+                className="glass group p-10 md:p-16 rounded-[3rem] md:rounded-[4rem] text-center space-y-6 border-2 border-transparent hover:border-primary/20"
+              >
+                <div className="w-20 h-20 md:w-28 md:h-28 bg-primary/10 text-primary mx-auto rounded-3xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                  <BookOpen size={48} />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-black text-slate-800">Latihan</h3>
+                  <p className="text-slate-500 font-medium">Belajar per mata pelajaran</p>
+                </div>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }}
+                onClick={() => { playUISound('click'); startQuiz(selectedGrade, 'uas'); }}
+                className="glass group p-10 md:p-16 rounded-[3rem] md:rounded-[4rem] text-center space-y-6 border-2 border-transparent hover:border-secondary/20"
+              >
+                <div className="w-20 h-20 md:w-28 md:h-28 bg-secondary/10 text-secondary mx-auto rounded-3xl flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all">
+                  <Trophy size={48} />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-black text-slate-800">Ujian (UAS)</h3>
+                  <p className="text-slate-500 font-medium">Tantangan campuran semua materi</p>
+                </div>
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+
         {screen === "SUBJECT_SELECT" && (
           <motion.div 
             key="subject"
@@ -374,14 +479,16 @@ export default function App() {
             transition={springTransition} className="w-full max-w-6xl space-y-10 md:space-y-16 z-10 px-4 py-10"
           >
             <div className="flex flex-col items-center text-center gap-4 md:gap-6">
-              <button onClick={() => { playUISound('pop'); setScreen("GRADE_SELECT"); }} className="group flex items-center gap-3 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-white/50 glass hover:bg-white transition-all font-bold text-slate-500 text-sm md:text-base"><ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Ganti Kelas</button>
+              <button onClick={() => { playUISound('pop'); setScreen("MODE_SELECT"); setEveScreen("MODE_SELECT"); }} className="group flex items-center gap-3 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-white/50 glass hover:bg-white transition-all font-bold text-slate-500 text-sm md:text-base"><ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Ganti Mode</button>
               <div className="inline-flex items-center gap-3 px-4 py-1.5 md:px-6 md:py-2 bg-primary/10 rounded-full text-primary font-black text-[10px] md:text-sm uppercase tracking-widest mb-2">
                 <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4" /> Kelas {selectedGrade.replace('grade', '')}
               </div>
               <h2 className="text-4xl md:text-6xl font-black text-gradient tracking-tight">Mata Pelajaran</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
-              {Object.keys(quizData[selectedGrade] || {}).map((subjectKey) => {
+              {Object.keys(quizData[selectedGrade] || {})
+                .filter(key => key !== 'uas')
+                .map((subjectKey) => {
                 const getIcon = () => {
                    switch(subjectKey) {
                     case 'matematika': return <Calculator className="w-7 h-7 md:w-9 md:h-9" />;
@@ -491,10 +598,19 @@ export default function App() {
                 {/* Background Decor */}
                 <div className="absolute -top-10 -right-10 md:-top-20 md:-right-20 w-40 h-40 md:w-64 md:h-64 bg-primary/5 rounded-full blur-2xl md:blur-3xl" />
                 
-                <div className="relative z-10 mb-8 md:mb-12 flex justify-center">
+                <div className="relative z-10 mb-8 md:mb-12 flex justify-center gap-3">
                   <div className={`inline-flex items-center gap-2 px-6 py-2 md:px-8 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-sm font-black uppercase tracking-[0.2em] shadow-sm ${quizData[selectedGrade][selectedSubject][currentQuestionIndex].type === 'essay' ? 'bg-purple-100 text-purple-600' : 'bg-indigo-100 text-indigo-600'}`}>
                     {quizData[selectedGrade][selectedSubject][currentQuestionIndex].type === 'essay' ? '✍️ Isian Singkat' : '🔘 Pilihan Ganda'}
                   </div>
+                  {quizData[selectedGrade][selectedSubject][currentQuestionIndex].difficulty && (
+                    <div className={`inline-flex items-center gap-2 px-6 py-2 md:px-8 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-sm font-black uppercase tracking-[0.2em] shadow-sm ${
+                      quizData[selectedGrade][selectedSubject][currentQuestionIndex].difficulty === 'sulit' ? 'bg-rose-100 text-rose-600' : 
+                      quizData[selectedGrade][selectedSubject][currentQuestionIndex].difficulty === 'sedang' ? 'bg-orange-100 text-orange-600' : 
+                      'bg-emerald-100 text-emerald-600'
+                    }`}>
+                      {quizData[selectedGrade][selectedSubject][currentQuestionIndex].difficulty}
+                    </div>
+                  )}
                 </div>
 
                 <h3 className="relative z-10 text-2xl md:text-4xl lg:text-5xl font-black text-slate-800 leading-[1.3] mb-8 md:mb-16 text-center tracking-tight px-2">
@@ -703,6 +819,17 @@ export default function App() {
                                   </div>
                                 )}
                               </div>
+                              {item.explanation && (
+                                <div className="mt-6 p-6 rounded-2xl md:rounded-[2.5rem] bg-amber-50 border-2 border-amber-100 shadow-sm">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <Sparkles className="w-4 h-4 text-amber-500" />
+                                    <span className="text-[10px] md:text-[10px] font-black text-amber-600 uppercase tracking-[0.2em]">Penjelasan / Pembahasan</span>
+                                  </div>
+                                  <p className="text-sm md:text-lg font-medium text-slate-700 leading-relaxed italic">
+                                    "{item.explanation}"
+                                  </p>
+                                </div>
+                              )}
                            </div>
                         </div>
                      </motion.div>
